@@ -1,0 +1,16 @@
+.navbar{
+  background:white;
+  padding:15px 0;
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.nav-wrapper{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.nav-wrapper ul{
+  display:flex;
+  gap:20px;
+}
