@@ -1,18 +1,34 @@
 import "./Footer.css";
 
-function Footer(){
+function Footer() {
 
-  return (
-    <footer className="footer">
+    return (
 
-      <div className="container">
+        <footer className="footer">
 
-        © 2026 PetStore
+            <div className="container">
 
-      </div>
+                <h2>PawPoint</h2>
 
-    </footer>
-  );
+                <p>
+
+                    Your one-stop destination for premium
+                    pet products.
+
+                </p>
+
+                <small>
+
+                    © 2026 PawPoint. All rights reserved.
+
+                </small>
+
+            </div>
+
+        </footer>
+
+    );
+
 }
 
 export default Footer;

@@ -1,43 +1,61 @@
 import "./Navbar.css";
 import { Link } from "react-router-dom";
+import { FaPaw, FaShoppingCart, FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const navigate = useNavigate();
 
   return (
-    <nav className="navbar">
 
-      <div className="container nav-wrapper">
+    <header className="navbar">
 
-        <Link to="/">
-          PetStore
+      <div className="container navbar-container">
+
+        <Link
+          to="/"
+          className="logo"
+        >
+
+          <FaPaw />
+
+          PawPoint
+
         </Link>
 
-        <ul>
+        <nav>
 
-          <li>
-            <Link to="/">
-              Home
-            </Link>
-          </li>
+          <Link to="/" >Home</Link>
 
-          <li>
-            <Link to="/login">
-              Login
-            </Link>
-          </li>
+          <Link to="/">Dogs</Link>
 
-          <li>
-            <Link to="/register">
-              Register
-            </Link>
-          </li>
+          <Link to="/">Cats</Link>
 
-        </ul>
+          <Link to="/">Products</Link>
+
+          <Link to="/">About</Link>
+
+          <Link to="/">Contact</Link>
+
+        </nav>
+
+        <div className="nav-icons">
+
+          <FaShoppingCart />
+
+          <FaUser
+            onClick={() => navigate("/register")}
+            title="Register"
+          />
+
+        </div>
 
       </div>
 
-    </nav>
+    </header>
+
   );
+
 }
 
 export default Navbar;
