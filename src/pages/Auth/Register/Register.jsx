@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { FaEye, FaEyeSlash, FaPaw } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, replace } from "react-router-dom";
 import "./Register.css";
 import { validateRegister } from "../../../utils/validators";
 import PasswordChecklist from "../../../components/Auth/PasswordChecklist";
 import { FaCheckCircle } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
+import authService from "../../../services/authService";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
     firstName: "",
@@ -29,21 +32,19 @@ function Register() {
 
     const [acceptedTerms, setAcceptedTerms] = useState(false);
 
+    const navigate = useNavigate();
+
     const handleChange = (e) => {
-
         const { name, value } = e.target;
-
         const updatedForm = {
             ...form,
             [name]: value,
         };
-
         setForm(updatedForm);
-
         setErrors(validateRegister(updatedForm));
     };
 
-    const handleSubmit = async e => {
+    const handleSubmit = async (e) => {
 
         e.preventDefault();
 
@@ -51,23 +52,42 @@ function Register() {
             validateRegister(form);
 
         if (Object.keys(validation).length) {
-
             setErrors(validation);
-
             return;
         }
-
-        setErrors({});
 
         try {
 
             setLoading(true);
 
-            console.log(form);
+            const response =
+                await authService.register({
+                    firstName: form.firstName,
+                    lastName: form.lastName,
+                    email: form.email,
+                    password: form.password
+                });
 
-            // API call later
+            localStorage.setItem("token",response.data.token);
 
-        } finally {
+            localStorage.setItem("user",JSON.stringify(response.data.user));
+            toast.success(response.message);
+            navigate("/login", {replace:true});
+        }
+
+        catch (error) {
+            console.log(error);
+            toast.error(
+
+                error.response?.data?.message ||
+
+                "Registration failed."
+
+            );
+
+        }
+
+        finally {
 
             setLoading(false);
 
@@ -229,22 +249,22 @@ function Register() {
 
                     <label className="terms">
 
-    <input
-        type="checkbox"
-        checked={acceptedTerms}
-        onChange={(e) =>
-            setAcceptedTerms(e.target.checked)
-        }
-    />
+                        <input
+                            type="checkbox"
+                            checked={acceptedTerms}
+                            onChange={(e) =>
+                                setAcceptedTerms(e.target.checked)
+                            }
+                        />
 
-    <span>
-        I agree to the{" "}
-        <Link to="/terms">Terms &amp; Conditions</Link>
-        {" "}and{" "}
-        <Link to="/privacy">Privacy Policy</Link>
-    </span>
+                        <span>
+                            I agree to the{" "}
+                            <Link to="/terms">Terms &amp; Conditions</Link>
+                            {" "}and{" "}
+                            <Link to="/privacy">Privacy Policy</Link>
+                        </span>
 
-</label>
+                    </label>
 
                     <button
                         className="register-btn"

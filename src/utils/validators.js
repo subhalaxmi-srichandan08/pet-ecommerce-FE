@@ -48,3 +48,37 @@ export function validateRegister(data) {
     return errors;
 
 }
+
+export const validateLogin = (form) => {
+
+    const errors = {};
+
+    // -----------------------------
+    // Email
+    // -----------------------------
+    if (!form.email.trim()) {
+
+        errors.email = "Email is required.";
+
+    }
+
+    else if (
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+    ) {
+
+        errors.email = "Enter a valid email address.";
+
+    }
+
+    // -----------------------------
+    // Password
+    // -----------------------------
+    if (!form.password) {
+
+        errors.password = "Password is required.";
+
+    }
+
+    return errors;
+
+};
