@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
-
+import useAuthStore from "../../../store/authStore";
 import "./Login.css";
 
 import authService from "../../../services/authService";
@@ -33,6 +33,7 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false);
 
     const [rememberMe, setRememberMe] = useState(false);
+    const setAuth = useAuthStore(state => state.setAuth);
 
     const handleChange = (e) => {
 
@@ -69,14 +70,9 @@ function Login() {
 
             const response = await authService.login(form);
 
-            localStorage.setItem(
-                "token",
-                response.data.token
-            );
-
-            localStorage.setItem(
-                "user",
-                JSON.stringify(response.data.user)
+            setAuth(
+                response.data.user,
+                response.data.accessToken
             );
 
             toast.success(response.message);
