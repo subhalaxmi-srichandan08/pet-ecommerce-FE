@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const useAuthStore = create((set, get) => ({
+const useAuthStore = create((set) => ({
 
     user: null,
 
@@ -8,21 +8,27 @@ const useAuthStore = create((set, get) => ({
 
     isAuthenticated: false,
 
+    loading: true,
+
     setAuth: (user, accessToken) => set({
         user,
         accessToken,
-        isAuthenticated: true
+        isAuthenticated: true,
+        loading: false
     }),
 
-    setAccessToken: (accessToken) => set({
-        accessToken,
-        isAuthenticated: true
-    }),
+    setAccessToken: (accessToken) => set(state => ({
+        ...state,
+        accessToken
+    })),
+
+    setLoading: (loading) => set({ loading }),
 
     logout: () => set({
         user: null,
         accessToken: null,
-        isAuthenticated: false
+        isAuthenticated: false,
+        loading: false
     })
 
 }));

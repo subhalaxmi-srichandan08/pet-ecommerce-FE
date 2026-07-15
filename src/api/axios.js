@@ -2,7 +2,7 @@ import axios from "axios";
 import useAuthStore from "../store/authStore";
 
 const api = axios.create({
-    baseURL: "https://pet-ecommerce-cq74.onrender.com/api",
+    baseURL: import.meta.env.VITE_API_URL,
     timeout: 10000,
     withCredentials: true,
     headers: {
@@ -47,13 +47,27 @@ api.interceptors.response.use(
         if (originalRequest._retry)
             return Promise.reject(error);
 
+        if (originalRequest.url.includes("/auth/login"))
+            return Promise.reject(error);
+
+        if (originalRequest.url.includes("/auth/register"))
+            return Promise.reject(error);
+
+        if (originalRequest.url.includes("/auth/refresh"))
+            return Promise.reject(error);
+
         if (isRefreshing) {
 
             return new Promise(resolve => {
+
                 failedQueue.push(token => {
+
                     originalRequest.headers.Authorization = `Bearer ${token}`;
+
                     resolve(api(originalRequest));
+
                 });
+
             });
 
         }
@@ -64,22 +78,11 @@ api.interceptors.response.use(
 
         try {
 
-            const response = await axios.post(
-                "https://pet-ecommerce-cq74.onrender.com/api/auth/refresh",
-                {},
-                {
-                    withCredentials: true
-                }
-            );
-
+            const response = await api.post("/auth/refresh");
             const accessToken = response.data.data.accessToken;
-
             useAuthStore.getState().setAccessToken(accessToken);
-
             processQueue(accessToken);
-
             originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-
             return api(originalRequest);
 
         } catch (err) {

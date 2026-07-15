@@ -1,86 +1,120 @@
-.navbar{
+.navbar {
 
-    background:white;
+    background: white;
 
-    position:sticky;
+    position: sticky;
 
-    top:0;
+    top: 0;
 
-    z-index:1000;
+    z-index: 1000;
 
-    box-shadow:0 5px 18px rgba(0,0,0,.08);
-
-}
-
-.navbar-container{
-
-    height:80px;
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .08);
 
 }
 
-.logo{
+.navbar-container {
 
-    display:flex;
+    height: 80px;
 
-    gap:10px;
+    display: flex;
 
-    align-items:center;
+    justify-content: space-between;
 
-    font-size:28px;
-
-    font-weight:700;
-
-    color:#2d6cdf;
+    align-items: center;
 
 }
 
-nav{
+.logo {
 
-    display:flex;
+    display: flex;
 
-    gap:30px;
+    gap: 10px;
 
-}
+    align-items: center;
 
-nav a{
+    font-size: 28px;
 
-    color:#444;
+    font-weight: 700;
 
-    font-weight:600;
-
-    transition:.25s;
+    color: #2d6cdf;
 
 }
 
-nav a:hover{
+nav {
 
-    color:#2d6cdf;
+    display: flex;
 
-}
-
-.nav-icons{
-
-    display:flex;
-
-    gap:20px;
-
-    font-size:22px;
-
-    cursor:pointer;
+    gap: 30px;
 
 }
 
-@media(max-width:900px){
+nav a {
 
-    nav{
+    color: #444;
 
-        display:none;
+    font-weight: 600;
+
+    transition: .25s;
+
+}
+
+nav a:hover {
+
+    color: #2d6cdf;
+
+}
+
+.nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+.nav-logout-btn{
+background:#ff6b35;
+color:#fff;
+border:none;
+padding:8px 14px;
+border-radius:20px;
+font-size:14px;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+}
+
+.nav-logout-btn:hover{
+background:#e85a28;
+}
+
+.nav-logout-btn:active {
+    transform: translateY(0);
+}
+
+.nav-logout-btn:hover {
+    text-decoration: underline;
+}
+
+@media(max-width:900px) {
+
+    nav {
+
+        display: none;
 
     }
 

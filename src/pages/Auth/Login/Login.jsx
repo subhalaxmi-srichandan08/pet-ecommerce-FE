@@ -71,8 +71,8 @@ function Login() {
             const response = await authService.login(form);
 
             setAuth(
-                response.data.user,
-                response.data.accessToken
+                response.data.data.user,
+                response.data.data.accessToken
             );
 
             toast.success(response.message);

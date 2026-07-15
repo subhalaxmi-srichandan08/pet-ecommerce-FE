@@ -78,11 +78,11 @@ function PasswordChecklist({ password }) {
                     key={item.label}
                     className={item.valid ? "valid" : "invalid"}
                 >
-                    <span className="icon">
+                    <span className={item.valid ? "iconValid" : "iconInValid"}>
                         {item.valid ? "✔" : "✖"}
                     </span>
 
-                    <span>{item.label}</span>
+                    <span className={item.valid ? "valid" : "invalid"}>{item.label}</span>
                 </div>
             ))}
         </div>

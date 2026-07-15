@@ -4,18 +4,16 @@ const register = data => api.post("/auth/register", data);
 
 const login = data => api.post("/auth/login", data);
 
-const logout = () => api.post("/auth/logout");
-
 const refresh = () => api.post("/auth/refresh");
 
+const me = () => api.get("/auth/me");
+
+const logout = () => api.post("/auth/logout");
+
 export default {
-
     register,
-
     login,
-
-    logout,
-
-    refresh
-
+    refresh,
+    me,
+    logout
 };
