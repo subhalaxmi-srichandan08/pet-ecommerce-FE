@@ -10,10 +10,18 @@ const me = () => api.get("/auth/me");
 
 const logout = () => api.post("/auth/logout");
 
+const forgotPassword = data =>
+    api.post("/auth/forgot-password", data);
+
+const resetPassword = (token, data) =>
+    api.post(`/auth/reset-password/${token}`, data);
+
 export default {
     register,
     login,
     refresh,
     me,
-    logout
+    logout,
+    forgotPassword,
+    resetPassword
 };
