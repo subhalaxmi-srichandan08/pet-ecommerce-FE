@@ -1,8 +1,8 @@
-import "./Home.css";
+import "./Landing.css";
 import hero from "../../assets/cat_dog.jpeg";
 import { useNavigate } from "react-router-dom";
 
-function Home() {
+function Landing() {
   const navigate = useNavigate();
 
   return (
@@ -73,4 +73,4 @@ function Home() {
 
 }
 
-export default Home;
+export default Landing;

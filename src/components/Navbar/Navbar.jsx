@@ -26,7 +26,7 @@ function Navbar() {
 
       logoutStore();
 
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
 
     }
 
