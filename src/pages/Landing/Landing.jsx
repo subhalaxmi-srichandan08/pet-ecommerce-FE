@@ -1,76 +1,40 @@
-import "./Landing.css";
-import hero from "../../assets/cat_dog.jpeg";
-import { useNavigate } from "react-router-dom";
+import Hero from "../../components/Hero/Hero";
+import ShopByPet from "../../components/ShopByPet/ShopByPet";
+import ProductSection from "../../components/ProductSection/ProductSection";
+import ProductGrid from "../../components/ProductGrid/ProductGrid";
+import BrandSlider from "../../components/BrandSlider/BrandSlider";
 
 function Landing() {
-  const navigate = useNavigate();
+    return (
+        <>
+            <Hero />
 
-  return (
+            <ShopByPet />
 
-    <>
+            <ProductSection
+                title="Featured Products"
+                subtitle="Most loved by pet parents."
+            >
+                <ProductGrid label="FEATURED" />
+            </ProductSection>
 
-      <section className="hero">
+            <ProductSection
+                title="New Arrivals"
+                subtitle="Freshly added products."
+            >
+                <ProductGrid label="NEW_ARRIVAL" />
+            </ProductSection>
 
-        <div className="container hero-container">
+            <ProductSection
+                title="Best Sellers"
+                subtitle="Top selling products."
+            >
+                <ProductGrid label="BEST_SELLER" />
+            </ProductSection>
 
-          <div className="hero-content">
-
-            <span>
-
-              🐾 Welcome to PawPoint
-
-            </span>
-
-            <h1>
-
-              Everything Your Pet Deserves
-
-            </h1>
-
-            <p>
-
-              Discover premium food, toys,
-              grooming products and accessories
-              for your furry friends.
-
-            </p>
-
-            <div className="hero-buttons">
-
-              <button
-                onClick={() => navigate("/register")}
-              >
-                Shop Dogs
-              </button>
-
-              <button
-                className="secondary"
-                onClick={() => navigate("/register")}
-              >
-                Shop Cats
-              </button>
-
-            </div>
-
-          </div>
-
-          <div className="hero-image">
-
-            <img
-              src={hero}
-              alt="Pet"
-            />
-
-          </div>
-
-        </div>
-
-      </section>
-
-    </>
-
-  );
-
+            <BrandSlider />
+        </>
+    );
 }
 
 export default Landing;

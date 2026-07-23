@@ -1,0 +1,102 @@
+.shop-by-pet{
+    margin-top:20px;
+}
+
+.section-header{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.section-header h2{
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+.section-header p{
+    color:#6b7280;
+    font-size:17px;
+}
+
+.pet-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+
+    gap:30px;
+}
+
+.pet-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:40px;
+
+    text-align:center;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.pet-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 20px 40px rgba(0,0,0,.12);
+}
+
+.pet-card img{
+
+    width:220px;
+
+    height:220px;
+
+    object-fit:contain;
+
+    margin-bottom:25px;
+}
+
+.pet-card h3{
+
+    font-size:32px;
+
+    margin-bottom:15px;
+}
+
+.pet-card p{
+
+    color:#666;
+
+    line-height:1.8;
+
+    margin-bottom:25px;
+}
+
+.pet-card button{
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:14px 34px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    font-weight:600;
+}
+
+.pet-card button:hover{
+
+    background:#1d4ed8;
+}
