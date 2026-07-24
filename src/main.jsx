@@ -18,16 +18,18 @@ import "./styles/variables.css";
 ReactDOM.createRoot(
     document.getElementById("root")
 ).render(
-    <BrowserRouter>
+    <React.StrictMode>
+            <BrowserRouter>
 
-        <AuthInitializer>
-            <App />
-        </AuthInitializer>
+                <AuthInitializer>
+                    <App />
+                </AuthInitializer>
 
-        <ToastContainer
-            position="top-right"
-            autoClose={2500}
-        />
+                <ToastContainer
+                    position="top-right"
+                    autoClose={2500}
+                />
 
-    </BrowserRouter>
+            </BrowserRouter>
+    </React.StrictMode>
 );

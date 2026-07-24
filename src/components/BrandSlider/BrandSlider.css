@@ -1,0 +1,67 @@
+.brand-slider{
+
+    margin:60px auto;
+
+}
+
+.brand-slider h2{
+
+    margin-bottom:30px;
+
+    text-align:center;
+
+}
+
+.brand-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+
+    gap:20px;
+
+}
+
+.brand-card{
+
+    background:#fff;
+
+    border:1px solid #eee;
+
+    border-radius:12px;
+
+    padding:20px;
+
+    text-align:center;
+
+    transition:.3s;
+
+}
+
+.brand-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.brand-card img{
+
+    width:80px;
+
+    height:80px;
+
+    object-fit:contain;
+
+    margin-bottom:15px;
+
+}
+
+.brand-card h3{
+
+    font-size:15px;
+
+    margin:0;
+
+}

@@ -1,45 +1,61 @@
 import { Routes, Route } from "react-router-dom";
 
-import Home from "../pages/Home/Home";
+import Landing from "../pages/Landing/Landing";
+import Products from "../pages/Products/Products";
+
 import Login from "../pages/Auth/Login/Login";
 import Register from "../pages/Auth/Register/Register";
-import ProtectedRoute from "./ProtectedRoute";
 import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
 import ResetPassword from "../pages/Auth/ResetPassword/ResetPassword";
+import ProductDetails from "../pages/ProductDetails/ProductDetails";
+import Cart from "../pages/Cart/Cart";
 
 function AppRoutes() {
+    return (
+        <Routes>
 
-  return (
-    <Routes>
+            <Route
+                path="/"
+                element={<Landing />}
+            />
 
-      <Route
-        path="/"
-        element={<ProtectedRoute>
-          <Home />
-        </ProtectedRoute>}
-      />
+            <Route
+                path="/products"
+                element={<Products />}
+            />
 
-      <Route
-        path="/login"
-        element={<Login />}
-      />
+            <Route
+                path="/login"
+                element={<Login />}
+            />
 
-      <Route
-        path="/register"
-        element={<Register />}
-      />
+            <Route
+                path="/register"
+                element={<Register />}
+            />
 
-      <Route
-        path="/forgot-password"
-        element={<ForgotPassword />}
-      />
+            <Route
+                path="/forgot-password"
+                element={<ForgotPassword />}
+            />
 
-      <Route
-        path="/reset-password/:token"
-        element={<ResetPassword />}
-      />
-    </Routes>
-  );
+            <Route
+                path="/reset-password/:token"
+                element={<ResetPassword />}
+            />
+
+            <Route
+                path="/cart"
+                element={<Cart />}
+            />
+
+            <Route
+                path="/products/:slug"
+                element={<ProductDetails />}
+            />
+
+        </Routes>
+    );
 }
 
 export default AppRoutes;
