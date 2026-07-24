@@ -80,7 +80,7 @@ function ProductGrid({
                 ))}
             </div>
 
-            {pagination && pagination.totalPages > 1 && (
+            {!label && pagination && pagination.totalPages > 1 && (
                 <div className="pagination">
 
                     <button

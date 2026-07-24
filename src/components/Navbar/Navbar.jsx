@@ -2,9 +2,16 @@ import "./Navbar.css";
 
 import { Link, useNavigate } from "react-router-dom";
 import { FaPaw, FaShoppingCart, FaUser } from "react-icons/fa";
+import {
+    BsCart3
+} from "react-icons/bs";
 
 import authService from "../../services/authService";
 import useAuthStore from "../../store/authStore";
+
+import useCartStore from "../../store/cartStore";
+
+import { useEffect, useState } from "react";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -24,10 +31,39 @@ function Navbar() {
         }
     };
 
+    const [search, setSearch] = useState("");
+    const handleSearch = e => {
+
+        e.preventDefault();
+
+        const value = search.trim();
+
+        if (!value)
+            return navigate("/products");
+
+        navigate(
+            `/products?search=${encodeURIComponent(value)}`
+        );
+
+    };
+
     const capitalizeFirstLetter = str => {
         if (!str) return "";
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
+
+    const count = useCartStore(state => state.count);
+    const fetchCart = useCartStore(state => state.fetchCart);
+
+    useEffect(() => {
+
+        if (isAuthenticated) {
+
+            fetchCart();
+
+        }
+
+    }, [isAuthenticated]);
 
     return (
         <header className="navbar">
@@ -68,13 +104,61 @@ function Navbar() {
                     */}
 
                 </nav>
+                <form
+                    className="navbar-search"
+                    onSubmit={handleSearch}
+                >
 
+                    <input
+                        type="text"
+                        placeholder="Search products..."
+                        value={search}
+                        onChange={e =>
+                            setSearch(e.target.value)
+                        }
+                    />
+
+                    <button type="submit">
+                        Search
+                    </button>
+
+                </form>
                 <div className="nav-icons">
 
-                    <FaShoppingCart
-                        style={{ cursor: "pointer" }}
+                    <div
+                        style={{
+                            position: "relative",
+                            cursor: "pointer"
+                        }}
                         onClick={() => navigate("/cart")}
-                    />
+                    >
+
+                        <BsCart3 />
+
+                        {count > 0 && (
+
+                            <span
+                                style={{
+                                    position: "absolute",
+                                    top: -10,
+                                    right: -10,
+                                    background: "red",
+                                    color: "#fff",
+                                    borderRadius: "50%",
+                                    width: 18,
+                                    height: 18,
+                                    fontSize: 11,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center"
+                                }}
+                            >
+                                {count}
+                            </span>
+
+                        )}
+
+                    </div>
 
                     {isAuthenticated ? (
 

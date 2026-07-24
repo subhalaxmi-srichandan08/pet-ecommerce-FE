@@ -8,6 +8,7 @@ import Register from "../pages/Auth/Register/Register";
 import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
 import ResetPassword from "../pages/Auth/ResetPassword/ResetPassword";
 import ProductDetails from "../pages/ProductDetails/ProductDetails";
+import Cart from "../pages/Cart/Cart";
 
 function AppRoutes() {
     return (
@@ -44,9 +45,14 @@ function AppRoutes() {
             />
 
             <Route
-    path="/products/:slug"
-    element={<ProductDetails />}
-/>
+                path="/cart"
+                element={<Cart />}
+            />
+
+            <Route
+                path="/products/:slug"
+                element={<ProductDetails />}
+            />
 
         </Routes>
     );

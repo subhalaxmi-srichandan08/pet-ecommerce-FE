@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 import categoryService from "../../services/categoryService";
 
-import dogImage from "../../assets/categories/dog.png";
-import catImage from "../../assets/categories/cat.png";
+import dogImage from "../../assets/categories/dog-shopping.jpeg";
+import catImage from "../../assets/categories/cat-shopping-3.jpg";
 
 function ShopByPet() {
     const navigate = useNavigate();
@@ -45,7 +45,7 @@ function ShopByPet() {
     }, []);
 
     const handleClick = (pet) => {
-          console.log("Clicked:", pet);
+        console.log("Clicked:", pet);
         navigate(`/products?pet=${pet}`);
     };
 
@@ -83,8 +83,13 @@ function ShopByPet() {
                         <img
                             src={pet.image}
                             alt={pet.title}
+                            style={{
+                                borderRadius: "20px",
+                                width: "100%",
+                                height: "220px",
+                                objectFit: "cover"
+                            }}
                         />
-
                         <h3>{pet.title}</h3>
 
                         <p>{pet.description}</p>
