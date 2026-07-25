@@ -10,6 +10,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import bannerService from "../../services/bannerService";
+import Loader from "../Loader/Loader";
 
 const Hero = () => {
     const [banners, setBanners] = useState([]);
@@ -32,13 +33,7 @@ const Hero = () => {
     }, []);
 
     if (loading) {
-        return (
-            <section className="hero">
-                <div className="hero-loading">
-                    Loading banners...
-                </div>
-            </section>
-        );
+        return <Loader />;
     }
 
     if (!banners.length) {
