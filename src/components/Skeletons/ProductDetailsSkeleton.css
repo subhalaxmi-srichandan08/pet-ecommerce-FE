@@ -1,0 +1,48 @@
+.main-image-skeleton{
+    width:100%;
+    height:480px;
+    border-radius:20px;
+}
+
+.thumb-row{
+    display:flex;
+    gap:12px;
+    margin-top:18px;
+}
+
+.thumb-skeleton{
+    width:80px;
+    height:80px;
+    border-radius:10px;
+}
+
+.title-skeleton{
+    width:80%;
+    height:42px;
+    margin-bottom:20px;
+}
+
+.subtitle-skeleton{
+    width:30%;
+    height:20px;
+    margin-bottom:18px;
+}
+
+.price-skeleton{
+    width:45%;
+    height:32px;
+    margin-bottom:25px;
+}
+
+.desc-skeleton{
+    width:100%;
+    height:18px;
+    margin-bottom:12px;
+}
+
+.button-skeleton{
+    width:220px;
+    height:55px;
+    margin-top:35px;
+    border-radius:40px;
+}

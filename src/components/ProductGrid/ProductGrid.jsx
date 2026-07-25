@@ -6,6 +6,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import productService from "../../services/productService";
 import ProductCard from "../ProductCard/ProductCard";
 
+import Loader from "../Loader/Loader";
+
 function ProductGrid({
     label,
     pet,
@@ -62,7 +64,7 @@ function ProductGrid({
     };
 
     if (loading) {
-        return <h3>Loading products...</h3>;
+        return <Loader />;
     }
 
     if (!products.length) {

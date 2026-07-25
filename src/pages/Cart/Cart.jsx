@@ -5,14 +5,15 @@ import { Link } from "react-router-dom";
 
 import cartService from "../../services/cartService";
 import useCartStore from "../../store/cartStore";
+import Loader from "../../components/Loader/Loader";
 
 function Cart() {
 
     const [cart, setCart] = useState(null);
     const [loading, setLoading] = useState(true);
     const fetchGlobalCart = useCartStore(
-    state => state.fetchCart
-);
+        state => state.fetchCart
+    );
 
     const fetchCart = async () => {
 
@@ -62,56 +63,52 @@ function Cart() {
 
     const increase = async item => {
 
-    await cartService.updateQuantity(
-        item.product._id,
-        item.quantity + 1
-    );
+        await cartService.updateQuantity(
+            item.product._id,
+            item.quantity + 1
+        );
 
-    await fetchCart();
-    await fetchGlobalCart();
+        await fetchCart();
+        await fetchGlobalCart();
 
-};
+    };
 
-const decrease = async item => {
+    const decrease = async item => {
 
-    if (item.quantity === 1) {
+        if (item.quantity === 1) {
+
+            await cartService.removeItem(
+                item.product._id
+            );
+
+        } else {
+
+            await cartService.updateQuantity(
+                item.product._id,
+                item.quantity - 1
+            );
+
+        }
+
+        await fetchCart();
+        await fetchGlobalCart();
+
+    };
+
+    const remove = async item => {
 
         await cartService.removeItem(
             item.product._id
         );
 
-    } else {
+        await fetchCart();
+        await fetchGlobalCart();
 
-        await cartService.updateQuantity(
-            item.product._id,
-            item.quantity - 1
-        );
+    };
 
+    if (loading) {
+        return <Loader />;
     }
-
-    await fetchCart();
-    await fetchGlobalCart();
-
-};
-
-const remove = async item => {
-
-    await cartService.removeItem(
-        item.product._id
-    );
-
-    await fetchCart();
-    await fetchGlobalCart();
-
-};
-
-    if (loading)
-        return (
-            <div className="container loading-cart">
-                Loading Cart...
-            </div>
-        );
-
     if (!cart || cart.items.length === 0)
         return (
 

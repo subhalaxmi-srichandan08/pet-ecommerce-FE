@@ -10,6 +10,7 @@ import cartService from "../../services/cartService";
 import { toast } from "react-toastify";
 
 import useCartStore from "../../store/cartStore";
+import ProductDetailsSkeleton from "../../components/Skeletons/ProductDetailsSkeleton";
 
 function ProductDetails() {
     const { slug } = useParams();
@@ -46,7 +47,9 @@ function ProductDetails() {
     }, [slug]);
     const fetchCart = useCartStore(state => state.fetchCart);
     
-    if (loading) return <h2 className="container">Loading...</h2>;
+    if (loading) {
+    return <ProductDetailsSkeleton />;
+}
 
     if (!product) return <h2 className="container">Product not found</h2>;
 
@@ -86,6 +89,7 @@ function ProductDetails() {
 
     return (
         <div className="container product-details">
+        <br></br>
 
             <div className="details-top">
 
