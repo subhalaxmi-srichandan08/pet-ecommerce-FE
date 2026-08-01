@@ -64,43 +64,43 @@ nav a:hover {
 
 }
 
-.navbar-search{
+.navbar-search {
 
-    display:flex;
+    display: flex;
 
-    align-items:center;
+    align-items: center;
 
-    gap:10px;
-
-}
-
-.navbar-search input{
-
-    width:260px;
-
-    padding:10px 14px;
-
-    border:1px solid #ddd;
-
-    border-radius:8px;
-
-    outline:none;
+    gap: 10px;
 
 }
 
-.navbar-search button{
+.navbar-search input {
 
-    padding:10px 18px;
+    width: 260px;
 
-    border:none;
+    padding: 10px 14px;
 
-    background:#2563eb;
+    border: 1px solid #ddd;
 
-    color:#fff;
+    border-radius: 8px;
 
-    border-radius:8px;
+    outline: none;
 
-    cursor:pointer;
+}
+
+.navbar-search button {
+
+    padding: 10px 18px;
+
+    border: none;
+
+    background: #2563eb;
+
+    color: #fff;
+
+    border-radius: 8px;
+
+    cursor: pointer;
 
 }
 
@@ -126,20 +126,34 @@ nav a:hover {
     font-weight: 600;
     color: #333;
 }
-.nav-logout-btn{
-background:#ff6b35;
-color:#fff;
-border:none;
-padding:8px 14px;
-border-radius:20px;
-font-size:14px;
-font-weight:600;
-cursor:pointer;
-transition:.2s;
+
+.nav-logout-btn {
+    background: #ff6b35;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
 }
 
-.nav-logout-btn:hover{
-background:#e85a28;
+.navbar-search button[type="button"] {
+    background: #f5f5f5;
+    color: #333;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.navbar-search button[type="button"]:hover {
+    background: #e5e5e5;
+}
+
+.nav-logout-btn:hover {
+    background: #e85a28;
 }
 
 .nav-logout-btn:active {

@@ -1,6 +1,6 @@
 import "./Navbar.css";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaPaw, FaShoppingCart, FaUser } from "react-icons/fa";
 import {
     BsCart3
@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 
 function Navbar() {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const user = useAuthStore(state => state.user);
     const isAuthenticated = useAuthStore(state => state.isAuthenticated);
@@ -31,18 +32,34 @@ function Navbar() {
         }
     };
 
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState(() => {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("search") || "";
+    });
+    useEffect(() => {
+
+        const params = new URLSearchParams(location.search);
+
+        setSearch(
+            params.get("search") || ""
+        );
+
+    }, [location.search]);
+
     const handleSearch = e => {
 
         e.preventDefault();
 
-        const value = search.trim();
+        const keyword = search.trim();
 
-        if (!value)
-            return navigate("/products");
+        const params = new URLSearchParams();
+
+        if (keyword) {
+            params.set("search", keyword);
+        }
 
         navigate(
-            `/products?search=${encodeURIComponent(value)}`
+            `/products?${params.toString()}`
         );
 
     };
@@ -113,10 +130,24 @@ function Navbar() {
                         type="text"
                         placeholder="Search products..."
                         value={search}
-                        onChange={e =>
-                            setSearch(e.target.value)
-                        }
+                        onChange={e => setSearch(e.target.value)}
                     />
+
+                    {search && (
+
+                        <button
+                            type="button"
+                            onClick={() => {
+
+                                setSearch("");
+                                navigate("/products");
+
+                            }}
+                        >
+                            ✕
+                        </button>
+
+                    )}
 
                     <button type="submit">
                         Search

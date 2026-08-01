@@ -6,7 +6,14 @@ const getProducts = params =>
 const getProduct = slug =>
     api.get(`/products/${slug}`);
 
+const getSuggestions = q =>
+    api.get("/products/suggestions", {
+        params: { q }
+    });
+
+
 export default {
     getProducts,
-    getProduct
+    getProduct,
+    getSuggestions
 };
