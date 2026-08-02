@@ -15,28 +15,20 @@ function Filters() {
 
     const [brands, setBrands] = useState([]);
 
-    const [searchParams, setSearchParams] =
-        useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
 
         const fetchBrands = async () => {
-
             try {
-
                 const res =
                     await brandService.getBrands();
-
                 setBrands(
                     res.data.data || []
                 );
-
             } catch (err) {
-
                 console.error(err);
-
             }
-
         };
 
         fetchBrands();

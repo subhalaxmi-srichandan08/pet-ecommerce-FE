@@ -108,6 +108,10 @@ function Navbar() {
                         Products
                     </Link>
 
+                    <Link to="/wishlist">
+                        Wishlist
+                    </Link>
+
                     {/* Uncomment after creating these pages */}
 
                     {/*

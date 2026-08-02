@@ -9,6 +9,7 @@ import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
 import ResetPassword from "../pages/Auth/ResetPassword/ResetPassword";
 import ProductDetails from "../pages/ProductDetails/ProductDetails";
 import Cart from "../pages/Cart/Cart";
+import Wishlist from "../pages/Wishlist/Wishlist";
 
 function AppRoutes() {
     return (
@@ -52,6 +53,11 @@ function AppRoutes() {
             <Route
                 path="/products/:slug"
                 element={<ProductDetails />}
+            />
+
+            <Route
+                path="/wishlist"
+                element={<Wishlist />}
             />
 
         </Routes>
