@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Landing from "../pages/Landing/Landing";
 import Products from "../pages/Products/Products";
+import Profile from "../pages/Profile/Profile";
 
 import Login from "../pages/Auth/Login/Login";
 import Register from "../pages/Auth/Register/Register";
@@ -58,6 +59,11 @@ function AppRoutes() {
             <Route
                 path="/wishlist"
                 element={<Wishlist />}
+            />
+
+            <Route
+                path="/profile"
+                element={<Profile />}
             />
 
         </Routes>

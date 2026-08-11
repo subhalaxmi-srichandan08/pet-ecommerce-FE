@@ -23,50 +23,56 @@ function Products() {
 
                     <div className="products-toolbar">
 
-                        <select
-                            value={
-                                searchParams.get("sort") ||
-                                "newest"
-                            }
-                            onChange={e => {
+                        <div className="sort-control">
+                            <span className="sort-label">
+                                Sort by
+                            </span>
 
-                                const params =
-                                    new URLSearchParams(
-                                        searchParams
-                                    );
+                            <div className="sort-select-wrapper">
+                                <select
+                                    value={
+                                        searchParams.get("sort") || "newest"
+                                    }
+                                    onChange={e => {
 
-                                params.set(
-                                    "sort",
-                                    e.target.value
-                                );
+                                        const params =
+                                            new URLSearchParams(
+                                                searchParams
+                                            );
 
-                                params.set(
-                                    "page",
-                                    "1"
-                                );
+                                        params.set(
+                                            "sort",
+                                            e.target.value
+                                        );
 
-                                setSearchParams(params);
+                                        params.set("page", "1");
 
-                            }}
-                        >
+                                        setSearchParams(params);
 
-                            <option value="newest">
-                                Newest
-                            </option>
+                                    }}
+                                >
+                                    <option value="newest">
+                                        Newest
+                                    </option>
 
-                            <option value="priceAsc">
-                                Price: Low to High
-                            </option>
+                                    <option value="priceAsc">
+                                        Price: Low to High
+                                    </option>
 
-                            <option value="priceDesc">
-                                Price: High to Low
-                            </option>
+                                    <option value="priceDesc">
+                                        Price: High to Low
+                                    </option>
 
-                            <option value="rating">
-                                Highest Rated
-                            </option>
+                                    <option value="rating">
+                                        Highest Rated
+                                    </option>
+                                </select>
 
-                        </select>
+                                <span className="sort-chevron">
+                                    ⌄
+                                </span>
+                            </div>
+                        </div>
 
                     </div>
 

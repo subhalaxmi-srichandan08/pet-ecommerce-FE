@@ -1,25 +1,27 @@
-.footer{
+.footer {
 
-    background:#1d2433;
+    background: #1d2433;
 
-    color:white;
+    color: white;
 
-    padding:70px 20px;
+    padding: 70px 20px;
 
-    text-align:center;
-
-}
-
-.footer h2{
-
-    margin-bottom:15px;
+    text-align: center;
+    margin-top: 10px;
 
 }
 
-.footer p{
+.footer h2 {
 
-    color:#ddd;
+    margin-bottom: 15px;
 
-    margin-bottom:20px;
+
+}
+
+.footer p {
+
+    color: #ddd;
+
+    margin-bottom: 20px;
 
 }
