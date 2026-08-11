@@ -1,83 +1,195 @@
 import "./Navbar.css";
 
-import { Link, useNavigate } from "react-router-dom";
-import { FaPaw, FaShoppingCart, FaUser } from "react-icons/fa";
+import {
+    Link,
+    useNavigate,
+    useLocation
+} from "react-router-dom";
+
+import {
+    FaPaw,
+    FaUser
+} from "react-icons/fa";
+
 import {
     BsCart3
 } from "react-icons/bs";
 
+import {
+    FiSearch,
+    FiX
+} from "react-icons/fi";
+
 import authService from "../../services/authService";
 import useAuthStore from "../../store/authStore";
-
 import useCartStore from "../../store/cartStore";
 
-import { useEffect, useState } from "react";
+import {
+    useEffect,
+    useState
+} from "react";
 
 function Navbar() {
+
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const user = useAuthStore(state => state.user);
-    const isAuthenticated = useAuthStore(state => state.isAuthenticated);
-    const logoutStore = useAuthStore(state => state.logout);
+    const user = useAuthStore(
+        state => state.user
+    );
 
-    const handleLogout = async () => {
-        try {
-            await authService.logout();
-        } catch (error) {
-            console.log(error);
-        } finally {
-            logoutStore();
-            navigate("/", { replace: true });
-        }
-    };
+    const isAuthenticated = useAuthStore(
+        state => state.isAuthenticated
+    );
 
-    const [search, setSearch] = useState("");
-    const handleSearch = e => {
+    const logoutStore = useAuthStore(
+        state => state.logout
+    );
 
-        e.preventDefault();
+    const count = useCartStore(
+        state => state.count
+    );
 
-        const value = search.trim();
+    const fetchCart = useCartStore(
+        state => state.fetchCart
+    );
 
-        if (!value)
-            return navigate("/products");
+    const [search, setSearch] = useState(() => {
 
-        navigate(
-            `/products?search=${encodeURIComponent(value)}`
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        return params.get("search") || "";
+
+    });
+
+    useEffect(() => {
+
+        const params =
+            new URLSearchParams(
+                location.search
+            );
+
+        setSearch(
+            params.get("search") || ""
         );
 
-    };
-
-    const capitalizeFirstLetter = str => {
-        if (!str) return "";
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    };
-
-    const count = useCartStore(state => state.count);
-    const fetchCart = useCartStore(state => state.fetchCart);
+    }, [location.search]);
 
     useEffect(() => {
 
         if (isAuthenticated) {
-
             fetchCart();
+        }
+
+    }, [isAuthenticated, fetchCart]);
+
+    const handleLogout = async () => {
+
+        try {
+
+            await authService.logout();
+
+        } catch (error) {
+
+            console.error(error);
+
+        } finally {
+
+            logoutStore();
+
+            navigate(
+                "/",
+                {
+                    replace: true
+                }
+            );
 
         }
 
-    }, [isAuthenticated]);
+    };
+
+    const handleSearch = e => {
+
+        e.preventDefault();
+
+        const keyword =
+            search.trim();
+
+        const params =
+            new URLSearchParams();
+
+        if (keyword) {
+
+            params.set(
+                "search",
+                keyword
+            );
+
+        }
+
+        navigate(
+            `/products?${params.toString()}`
+        );
+
+    };
+
+    const clearSearch = () => {
+
+        setSearch("");
+
+        navigate("/products");
+
+    };
+
+    const capitalizeFirstLetter = str => {
+
+        if (!str) return "";
+
+        return (
+            str.charAt(0).toUpperCase() +
+            str.slice(1)
+        );
+
+    };
 
     return (
+
         <header className="navbar">
 
             <div className="container navbar-container">
 
-                <Link to="/" className="logo">
-                    <FaPaw />
-                    PawPoint
+                {/* =========================
+                    LOGO
+                ========================== */}
+
+                <Link
+                    to="/"
+                    className="logo"
+                >
+
+                    <span className="logo-icon">
+                        <FaPaw />
+                    </span>
+
+                    <span className="logo-text">
+                        PawPoint
+                    </span>
+
                 </Link>
 
-                <nav>
 
-                    <Link to="/">Home</Link>
+                {/* =========================
+                    NAVIGATION
+                ========================== */}
+
+                <nav className="navbar-nav">
+
+                    <Link to="/">
+                        Home
+                    </Link>
 
                     <Link to="/products?pet=Dog">
                         Dogs
@@ -91,90 +203,145 @@ function Navbar() {
                         Products
                     </Link>
 
-                    {/* Uncomment after creating these pages */}
-
-                    {/*
-                    <Link to="/about">
-                        About
+                    <Link to="/wishlist">
+                        Wishlist
                     </Link>
-
-                    <Link to="/contact">
-                        Contact
-                    </Link>
-                    */}
 
                 </nav>
+
+
+                {/* =========================
+                    SEARCH
+                ========================== */}
+
                 <form
                     className="navbar-search"
                     onSubmit={handleSearch}
                 >
+
+                    <FiSearch
+                        className="search-icon"
+                    />
 
                     <input
                         type="text"
                         placeholder="Search products..."
                         value={search}
                         onChange={e =>
-                            setSearch(e.target.value)
+                            setSearch(
+                                e.target.value
+                            )
                         }
                     />
 
-                    <button type="submit">
+                    {search && (
+
+                        <button
+                            type="button"
+                            className="search-clear"
+                            onClick={
+                                clearSearch
+                            }
+                            aria-label="Clear search"
+                        >
+
+                            <FiX />
+
+                        </button>
+
+                    )}
+
+                    <button
+                        type="submit"
+                        className="search-submit"
+                    >
                         Search
                     </button>
 
                 </form>
-                <div className="nav-icons">
 
-                    <div
-                        style={{
-                            position: "relative",
-                            cursor: "pointer"
-                        }}
-                        onClick={() => navigate("/cart")}
+
+                {/* =========================
+                    ACTIONS
+                ========================== */}
+
+                <div className="navbar-actions">
+
+                    {/* Cart */}
+
+                    <button
+                        type="button"
+                        className="cart-button"
+                        onClick={() =>
+                            navigate("/cart")
+                        }
+                        aria-label="Shopping cart"
                     >
 
                         <BsCart3 />
 
                         {count > 0 && (
 
-                            <span
-                                style={{
-                                    position: "absolute",
-                                    top: -10,
-                                    right: -10,
-                                    background: "red",
-                                    color: "#fff",
-                                    borderRadius: "50%",
-                                    width: 18,
-                                    height: 18,
-                                    fontSize: 11,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center"
-                                }}
-                            >
+                            <span className="cart-count">
                                 {count}
                             </span>
 
                         )}
 
-                    </div>
+                    </button>
+
+
+                    {/* User */}
 
                     {isAuthenticated ? (
 
                         <div className="user-section">
 
-                            <span className="user-name">
+                            <button
+                                type="button"
+                                className="user-button"
+                                onClick={() =>
+                                    navigate(
+                                        "/profile"
+                                    )
+                                }
+                            >
 
-                                <FaUser />
+                                <span className="user-avatar">
 
-                                {capitalizeFirstLetter(user?.firstName)}
+                                    {user?.avatar ? (
 
-                            </span>
+                                        <img
+                                            src={user.avatar}
+                                            alt={
+                                                user.firstName
+                                            }
+                                        />
+
+                                    ) : (
+
+                                        <FaUser />
+
+                                    )}
+
+                                </span>
+
+                                <span className="user-name">
+
+                                    {capitalizeFirstLetter(
+                                        user?.firstName
+                                    )}
+
+                                </span>
+
+                            </button>
 
                             <button
+                                type="button"
                                 className="nav-logout-btn"
-                                onClick={handleLogout}
+                                onClick={
+                                    handleLogout
+                                }
                             >
                                 Logout
                             </button>
@@ -183,32 +350,33 @@ function Navbar() {
 
                     ) : (
 
-                        <>
+                        <div className="auth-actions">
 
-                            <span
-                                onClick={() => navigate("/login")}
-                                style={{
-                                    cursor: "pointer",
-                                    fontSize: "16px",
-                                    fontWeight: "600",
-                                }}
+                            <button
+                                type="button"
+                                className="login-button"
+                                onClick={() =>
+                                    navigate(
+                                        "/login"
+                                    )
+                                }
                             >
                                 Login
-                            </span>
+                            </button>
 
-                            <span
-                                onClick={() => navigate("/register")}
-                                style={{
-                                    cursor: "pointer",
-                                    fontSize: "16px",
-                                    fontWeight: "600",
-                                    color: "#2d6cdf",
-                                }}
+                            <button
+                                type="button"
+                                className="register-button"
+                                onClick={() =>
+                                    navigate(
+                                        "/register"
+                                    )
+                                }
                             >
                                 Register
-                            </span>
+                            </button>
 
-                        </>
+                        </div>
 
                     )}
 
@@ -217,7 +385,9 @@ function Navbar() {
             </div>
 
         </header>
+
     );
+
 }
 
 export default Navbar;

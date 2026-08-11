@@ -1,19 +1,24 @@
+import "./App.css";
+
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 
 import AppRoutes from "./routes/AppRoutes";
 
-function App(){
+function App() {
+    return (
+        <div className="app">
 
-  return (
-    <>
-      <Navbar />
+            <Navbar />
 
-      <AppRoutes />
+            <main className="app-main">
+                <AppRoutes />
+            </main>
 
-      <Footer />
-    </>
-  );
+            <Footer />
+
+        </div>
+    );
 }
 
 export default App;

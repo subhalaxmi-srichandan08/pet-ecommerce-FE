@@ -2,10 +2,12 @@ import "./ProductCard.css";
 
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 import cartService from "../../services/cartService";
 import useAuthStore from "../../store/authStore";
 import useCartStore from "../../store/cartStore";
+import useWishlistStore from "../../store/wishlistStore";
 
 function ProductCard({ product }) {
 
@@ -17,6 +19,18 @@ function ProductCard({ product }) {
 
     const fetchCart = useCartStore(
         state => state.fetchCart
+    );
+
+    const wishlist = useWishlistStore(
+        state => state.wishlist
+    );
+
+    const addToWishlist = useWishlistStore(
+        state => state.addToWishlist
+    );
+
+    const removeFromWishlist = useWishlistStore(
+        state => state.removeFromWishlist
     );
 
     const {
@@ -38,6 +52,9 @@ function ProductCard({ product }) {
                 ((price - discountPrice) / price) * 100
             )
             : 0;
+    const isWishlisted = wishlist.some(
+        item => item.product._id === _id
+    );
 
     const handleAddToCart = async (e) => {
 
@@ -78,9 +95,62 @@ function ProductCard({ product }) {
 
     };
 
+    const handleWishlist = async e => {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!isAuthenticated) {
+
+            toast.info("Please login first");
+            navigate("/login");
+
+            return;
+
+        }
+
+        try {
+
+            if (isWishlisted) {
+
+                await removeFromWishlist(_id);
+
+                toast.success("Removed from wishlist");
+
+            } else {
+
+                await addToWishlist(product);
+
+                toast.success("Added to wishlist");
+
+            }
+
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed");
+        }
+
+    };
+
     return (
 
         <div className="product-card">
+
+            <button
+    className={`wishlist-btn ${
+        isWishlisted ? "active" : ""
+    }`}
+    onClick={handleWishlist}
+    aria-label="Wishlist"
+>
+
+    {
+        isWishlisted
+            ? <FaHeart />
+            : <FaRegHeart />
+    }
+
+</button>
 
             <Link
                 to={`/products/${slug}`}

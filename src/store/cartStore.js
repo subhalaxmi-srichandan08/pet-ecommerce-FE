@@ -36,6 +36,7 @@ const useCartStore = create((set) => ({
         }
 
     }
+    
 
 }));
 

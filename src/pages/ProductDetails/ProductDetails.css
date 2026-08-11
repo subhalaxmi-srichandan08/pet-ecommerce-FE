@@ -77,9 +77,13 @@
 }
 
 .original-price {
+
+    font-size: 14px;
+
+    color: #9ca3af;
+
     text-decoration: line-through;
-    color: #999;
-    font-size: 20px;
+
 }
 
 .discount {
