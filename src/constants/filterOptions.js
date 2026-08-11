@@ -2,26 +2,26 @@ export const PRICE_RANGES = [
 
     {
         label: "Under ₹500",
-        min: 0,
-        max: 500,
+        minPrice: 0,
+        maxPrice: 500,
     },
 
     {
         label: "₹500 - ₹1000",
-        min: 500,
-        max: 1000,
+        minPrice: 500,
+        maxPrice: 1000,
     },
 
     {
         label: "₹1000 - ₹2000",
-        min: 1000,
-        max: 2000,
+        minPrice: 1000,
+        maxPrice: 2000,
     },
 
     {
         label: "Above ₹2000",
-        min: 2000,
-        max: "",
+        minPrice: 2000,
+        maxPrice: "",
     }
 
 ];
@@ -29,11 +29,8 @@ export const PRICE_RANGES = [
 export const RATINGS = [
 
     4,
-
     3,
-
     2,
-
     1
 
 ];

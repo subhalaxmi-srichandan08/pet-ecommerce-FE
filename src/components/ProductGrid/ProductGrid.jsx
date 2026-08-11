@@ -1,11 +1,17 @@
 import "./ProductGrid.css";
 
-import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import {
+    useEffect,
+    useState
+} from "react";
+
+import {
+    useNavigate,
+    useLocation
+} from "react-router-dom";
 
 import productService from "../../services/productService";
 import ProductCard from "../ProductCard/ProductCard";
-
 import Loader from "../Loader/Loader";
 
 function ProductGrid({
@@ -14,53 +20,129 @@ function ProductGrid({
     category,
     brand,
     search,
+    minPrice,
+    maxPrice,
+    rating,
+    availability,
     sort,
     limit = 8,
     page = 1,
 }) {
-    const [products, setProducts] = useState([]);
-    const [pagination, setPagination] = useState(null);
-    const [loading, setLoading] = useState(true);
+
+    const [products, setProducts] =
+        useState([]);
+
+    const [pagination, setPagination] =
+        useState(null);
+
+    const [loading, setLoading] =
+        useState(true);
 
     const navigate = useNavigate();
+
     const location = useLocation();
 
     useEffect(() => {
+
         const fetchProducts = async () => {
+
             setLoading(true);
 
             try {
-                const res = await productService.getProducts({
-                    label,
-                    pet,
-                    category,
-                    brand,
-                    search,
-                    sort,
-                    page,
-                    limit,
-                });
 
-                setProducts(res.data.products || []);
-                setPagination(res.data.pagination || null);
-            } catch (err) {
-                console.error("Failed to fetch products:", err);
+                const params = {
+
+                    label,
+
+                    pet,
+
+                    category,
+
+                    brand,
+
+                    search,
+
+                    minPrice,
+
+                    maxPrice,
+
+                    rating,
+
+                    availability,
+
+                    sort,
+
+                    page,
+
+                    limit,
+
+                };
+
+                const res =
+                    await productService.getProducts(
+                        params
+                    );
+
+                setProducts(
+                    res.data.products || []
+                );
+
+                setPagination(
+                    res.data.pagination || null
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to fetch products:",
+                    error
+                );
+
                 setProducts([]);
+
                 setPagination(null);
+
             } finally {
+
                 setLoading(false);
+
             }
+
         };
 
         fetchProducts();
-    }, [label, pet, category, brand, search, sort, page, limit]);
+
+    }, [
+        label,
+        pet,
+        category,
+        brand,
+        search,
+        minPrice,
+        maxPrice,
+        rating,
+        availability,
+        sort,
+        page,
+        limit
+    ]);
 
     const changePage = newPage => {
-        const params = new URLSearchParams(location.search);
 
-        params.set("page", newPage);
+        const params =
+            new URLSearchParams(
+                location.search
+            );
 
-        navigate(`${location.pathname}?${params.toString()}`);
+        params.set(
+            "page",
+            String(newPage)
+        );
+
+        navigate(
+            `${location.pathname}?${params.toString()}`
+        );
+
     };
 
     if (loading) {
@@ -68,43 +150,77 @@ function ProductGrid({
     }
 
     if (!products.length) {
-        return <h3>No products found.</h3>;
+        return (
+            <h3>
+                No products found.
+            </h3>
+        );
     }
 
     return (
         <>
+
             <div className="product-grid">
+
                 {products.map(product => (
+
                     <ProductCard
                         key={product._id}
                         product={product}
                     />
+
                 ))}
+
             </div>
 
-            {!label && pagination && pagination.totalPages > 1 && (
-                <div className="pagination">
+            {
+                !label &&
+                pagination &&
+                pagination.totalPages > 1 && (
 
-                    <button
-                        disabled={pagination.page === 1}
-                        onClick={() => changePage(pagination.page - 1)}
-                    >
-                        Previous
-                    </button>
+                    <div className="pagination">
 
-                    <span>
-                        Page {pagination.page} of {pagination.totalPages}
-                    </span>
+                        <button
+                            disabled={
+                                pagination.page === 1
+                            }
+                            onClick={() =>
+                                changePage(
+                                    pagination.page - 1
+                                )
+                            }
+                        >
+                            Previous
+                        </button>
 
-                    <button
-                        disabled={pagination.page === pagination.totalPages}
-                        onClick={() => changePage(pagination.page + 1)}
-                    >
-                        Next
-                    </button>
+                        <span>
 
-                </div>
-            )}
+                            Page{" "}
+                            {pagination.page}
+                            {" "}of{" "}
+                            {pagination.totalPages}
+
+                        </span>
+
+                        <button
+                            disabled={
+                                pagination.page ===
+                                pagination.totalPages
+                            }
+                            onClick={() =>
+                                changePage(
+                                    pagination.page + 1
+                                )
+                            }
+                        >
+                            Next
+                        </button>
+
+                    </div>
+
+                )
+            }
+
         </>
     );
 }

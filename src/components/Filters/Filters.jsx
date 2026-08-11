@@ -1,7 +1,13 @@
 import "./Filters.css";
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import {
+    useEffect,
+    useState
+} from "react";
+
+import {
+    useSearchParams
+} from "react-router-dom";
 
 import brandService from "../../services/brandService";
 
@@ -13,54 +19,140 @@ import {
 
 function Filters() {
 
-    const [brands, setBrands] = useState([]);
+    const [brands, setBrands] =
+        useState([]);
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [
+        searchParams,
+        setSearchParams
+    ] = useSearchParams();
 
     useEffect(() => {
 
         const fetchBrands = async () => {
+
             try {
+
                 const res =
                     await brandService.getBrands();
+
                 setBrands(
                     res.data.data || []
                 );
-            } catch (err) {
-                console.error(err);
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to fetch brands:",
+                    error
+                );
+
             }
+
         };
 
         fetchBrands();
 
     }, []);
 
-const updateParam = (key, value) => {
+    /*
+     * Generic filter update
+     *
+     * Used by:
+     * Brand
+     * Rating
+     * Availability
+     */
+    const updateParam = (
+        key,
+        value
+    ) => {
 
-    const params = new URLSearchParams(searchParams);
+        const params =
+            new URLSearchParams(
+                searchParams
+            );
 
-    // Clear search when selecting a filter
-    params.delete("search");
+        if (
+            value !== undefined &&
+            value !== null &&
+            value !== ""
+        ) {
 
-    if (value) {
-        params.set(key, value);
-    } else {
-        params.delete(key);
-    }
+            params.set(
+                key,
+                String(value)
+            );
 
-    params.set("page", 1);
+        } else {
 
-    setSearchParams(params);
+            params.delete(key);
 
-};
+        }
 
+        /*
+         * Always restart pagination
+         * after changing a filter.
+         */
+        params.set(
+            "page",
+            "1"
+        );
+
+        setSearchParams(params);
+
+    };
+
+    /*
+     * Price filter
+     */
+    const updatePrice = price => {
+
+        const params =
+            new URLSearchParams(searchParams);
+
+        if (
+            price.minPrice !== "" &&
+            price.minPrice !== undefined
+        ) {
+            params.set(
+                "minPrice",
+                String(price.minPrice)
+            );
+        } else {
+            params.delete("minPrice");
+        }
+
+        if (
+            price.maxPrice !== "" &&
+            price.maxPrice !== undefined
+        ) {
+            params.set(
+                "maxPrice",
+                String(price.maxPrice)
+            );
+        } else {
+            params.delete("maxPrice");
+        }
+
+        params.set("page", "1");
+
+        setSearchParams(params);
+    };
+
+    /*
+     * Clear all filters but
+     * preserve product search.
+     */
     const clearFilters = () => {
 
         const params =
             new URLSearchParams();
 
         const search =
-            searchParams.get("search");
+            searchParams.get(
+                "search"
+            );
 
         if (search) {
 
@@ -81,9 +173,12 @@ const updateParam = (key, value) => {
 
             <div className="filters-header">
 
-                <h3>Filters</h3>
+                <h3>
+                    Filters
+                </h3>
 
                 <button
+                    type="button"
                     onClick={clearFilters}
                 >
                     Clear
@@ -91,12 +186,18 @@ const updateParam = (key, value) => {
 
             </div>
 
+
+            {/* =========================
+                BRAND
+            ========================== */}
+
             <div className="filter-group">
 
-                <h4>Brand</h4>
+                <h4>
+                    Brand
+                </h4>
 
                 {
-
                     brands.map(brand => (
 
                         <label
@@ -106,20 +207,20 @@ const updateParam = (key, value) => {
                             <input
                                 type="radio"
                                 name="brand"
+
                                 checked={
-                                    searchParams.get("brand") ===
+                                    searchParams.get(
+                                        "brand"
+                                    ) ===
                                     brand.slug
                                 }
-                                onChange={() => {
 
-                                    console.log("Clicked Brand:", brand);
-
+                                onChange={() =>
                                     updateParam(
                                         "brand",
                                         brand.slug
-                                    );
-
-                                }}
+                                    )
+                                }
                             />
 
                             {brand.name}
@@ -127,153 +228,154 @@ const updateParam = (key, value) => {
                         </label>
 
                     ))
-
                 }
 
             </div>
+
+
+            {/* =========================
+                PRICE
+            ========================== */}
 
             <div className="filter-group">
 
                 <h4>Price</h4>
 
-                {
+                {PRICE_RANGES.map(price => {
 
-                    PRICE_RANGES.map(price => (
+                    const currentMin =
+                        searchParams.get("minPrice");
 
-                        <label
-                            key={price.label}
-                        >
+                    const currentMax =
+                        searchParams.get("maxPrice");
+
+                    const isSelected =
+                        currentMin === String(price.minPrice) &&
+                        (
+                            price.maxPrice === ""
+                                ? !currentMax
+                                : currentMax === String(price.maxPrice)
+                        );
+
+                    return (
+
+                        <label key={price.label}>
 
                             <input
                                 type="radio"
                                 name="price"
-                                checked={
-                                    searchParams.get("minPrice") ===
-                                    String(price.minPrice)
+                                checked={isSelected}
+                                onChange={() =>
+                                    updatePrice(price)
                                 }
-                                onChange={() => {
-
-                                    const params =
-                                        new URLSearchParams(
-                                            searchParams
-                                        );
-
-                                    params.set(
-                                        "minPrice",
-                                        price.minPrice
-                                    );
-
-                                    if (
-                                        price.maxPrice !== ""
-                                    ) {
-
-                                        params.set(
-                                            "maxPrice",
-                                            price.maxPrice
-                                        );
-
-                                    } else {
-
-                                        params.delete(
-                                            "maxPrice"
-                                        );
-
-                                    }
-
-                                    params.set(
-                                        "page",
-                                        1
-                                    );
-
-                                    setSearchParams(
-                                        params
-                                    );
-
-                                }}
                             />
 
                             {price.label}
 
                         </label>
 
-                    ))
+                    );
 
+                })}
+
+            </div>
+
+
+            {/* =========================
+                RATING
+            ========================== */}
+
+            <div className="filter-group">
+
+                <h4>
+                    Rating
+                </h4>
+
+                {
+                    RATINGS.map(
+                        rating => (
+
+                            <label
+                                key={rating}
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="rating"
+
+                                    checked={
+                                        searchParams.get(
+                                            "rating"
+                                        ) ===
+                                        String(
+                                            rating
+                                        )
+                                    }
+
+                                    onChange={() =>
+                                        updateParam(
+                                            "rating",
+                                            rating
+                                        )
+                                    }
+                                />
+
+                                {rating} ★ & Up
+
+                            </label>
+
+                        )
+                    )
                 }
 
             </div>
 
-            <div className="filter-group">
 
-                <h4>Rating</h4>
-
-                {
-
-                    RATINGS.map(rating => (
-
-                        <label
-                            key={rating}
-                        >
-
-                            <input
-                                type="radio"
-                                name="rating"
-                                checked={
-                                    searchParams.get("rating") ===
-                                    String(rating)
-                                }
-                                onChange={() =>
-                                    updateParam(
-                                        "rating",
-                                        rating
-                                    )
-                                }
-                            />
-
-                            {rating} ★ & Up
-
-                        </label>
-
-                    ))
-
-                }
-
-            </div>
+            {/* =========================
+                AVAILABILITY
+            ========================== */}
 
             <div className="filter-group">
 
-                <h4>Availability</h4>
+                <h4>
+                    Availability
+                </h4>
 
                 {
+                    AVAILABILITY.map(
+                        item => (
 
-                    AVAILABILITY.map(item => (
-
-                        <label
-                            key={item.value}
-                        >
-
-                            <input
-                                type="radio"
-                                name="availability"
-                                checked={
-                                    searchParams.get(
-                                        "availability"
-                                    ) ===
+                            <label
+                                key={
                                     item.value
                                 }
-                                onChange={() =>
-                                    updateParam(
-                                        "availability",
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="availability"
+
+                                    checked={
+                                        searchParams.get(
+                                            "availability"
+                                        ) ===
                                         item.value
-                                    )
-                                }
-                            />
+                                    }
 
-                            {item.label}
+                                    onChange={() =>
+                                        updateParam(
+                                            "availability",
+                                            item.value
+                                        )
+                                    }
+                                />
 
-                        </label>
+                                {item.label}
 
-                    ))
+                            </label>
 
+                        )
+                    )
                 }
 
             </div>
@@ -281,7 +383,6 @@ const updateParam = (key, value) => {
         </aside>
 
     );
-
 }
 
 export default Filters;

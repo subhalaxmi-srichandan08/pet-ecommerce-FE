@@ -11,7 +11,6 @@ function Products() {
         useSearchParams();
 
     return (
-
         <div className="products-page container">
 
             <h1>Products</h1>
@@ -25,49 +24,46 @@ function Products() {
                     <div className="products-toolbar">
 
                         <select
-
-                            value={searchParams.get("sort") || "newest"}
-
+                            value={
+                                searchParams.get("sort") ||
+                                "newest"
+                            }
                             onChange={e => {
 
                                 const params =
-                                    new URLSearchParams(searchParams);
+                                    new URLSearchParams(
+                                        searchParams
+                                    );
 
                                 params.set(
                                     "sort",
                                     e.target.value
                                 );
 
-                                params.set("page", 1);
+                                params.set(
+                                    "page",
+                                    "1"
+                                );
 
                                 setSearchParams(params);
 
                             }}
-
                         >
 
                             <option value="newest">
-
                                 Newest
-
                             </option>
 
                             <option value="priceAsc">
-
                                 Price: Low to High
-
                             </option>
 
                             <option value="priceDesc">
-
                                 Price: High to Low
-
                             </option>
 
                             <option value="rating">
-
                                 Highest Rated
-
                             </option>
 
                         </select>
@@ -76,29 +72,57 @@ function Products() {
 
                     <ProductGrid
 
-                        search={searchParams.get("search") || ""}
+                        search={
+                            searchParams.get("search") || ""
+                        }
 
-                        pet={searchParams.get("pet") || ""}
+                        pet={
+                            searchParams.get("pet") || ""
+                        }
 
-                        category={searchParams.get("category") || ""}
+                        category={
+                            searchParams.get("category") || ""
+                        }
 
-                        brand={searchParams.get("brand") || ""}
+                        brand={
+                            searchParams.get("brand") || ""
+                        }
 
-                        sort={searchParams.get("sort") || "newest"}
+                        minPrice={
+                            searchParams.get("minPrice") || ""
+                        }
 
-                        page={Number(searchParams.get("page")) || 1}
+                        maxPrice={
+                            searchParams.get("maxPrice") || ""
+                        }
+
+                        rating={
+                            searchParams.get("rating") || ""
+                        }
+
+                        availability={
+                            searchParams.get("availability") || ""
+                        }
+
+                        sort={
+                            searchParams.get("sort") ||
+                            "newest"
+                        }
+
+                        page={
+                            Number(
+                                searchParams.get("page")
+                            ) || 1
+                        }
 
                     />
-
 
                 </div>
 
             </div>
 
         </div>
-
     );
-
 }
 
 export default Products;
