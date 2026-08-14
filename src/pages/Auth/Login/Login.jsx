@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
 import { Link, useNavigate } from "react-router-dom";
 import {
     FaEye,
@@ -101,6 +102,52 @@ function Login() {
 
     };
 
+    const handleGoogleLogin = async (credentialResponse) => {
+
+        try {
+
+            setLoading(true);
+
+            const response =
+                await authService.googleLogin(
+                    credentialResponse.credential
+                );
+
+            const data = response.data.data;
+
+            setAuth(
+                data.user,
+                data.accessToken
+            );
+
+            toast.success(
+                "Google sign in successful."
+            );
+
+            navigate("/", {
+                replace: true
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Google login error:",
+                error
+            );
+
+            toast.error(
+                error.response?.data?.message ||
+                "Google sign in failed."
+            );
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
     return (
 
         <section className="login-page">
@@ -165,7 +212,9 @@ function Login() {
 
                         </div>
 
-                        <span>{errors.email}</span>
+                        <span className="field-error">
+    {errors.email}
+</span>
 
                     </div>
 
@@ -204,7 +253,9 @@ function Login() {
 
                         </div>
 
-                        <span>{errors.password}</span>
+                        <span className="field-error">
+    {errors.password}
+</span>
 
                     </div>
 
@@ -240,24 +291,34 @@ function Login() {
                         className="login-btn"
                         disabled={loading}
                     >
-
                         {
                             loading
-
                                 ?
-
                                 <ClipLoader
                                     color="#fff"
                                     size={20}
                                 />
-
                                 :
-
                                 "Sign In"
-
                         }
-
                     </button>
+
+                    <div className="google-divider">
+                        <span>OR</span>
+                    </div>
+
+                    <div className="google-login">
+                        <GoogleLogin
+                            onSuccess={handleGoogleLogin}
+                            onError={() => {
+                                toast.error(
+                                    "Google sign in failed."
+                                );
+                            }}
+                            useOneTap={false}
+                            width="100%"
+                        />
+                    </div>
 
                     <p className="bottom-text">
 

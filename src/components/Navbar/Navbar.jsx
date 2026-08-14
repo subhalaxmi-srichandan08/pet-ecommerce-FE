@@ -17,22 +17,30 @@ import {
 
 import {
     FiSearch,
-    FiX
+    FiX,
+    FiLoader
 } from "react-icons/fi";
 
 import authService from "../../services/authService";
+import productService from "../../services/productService";
+
 import useAuthStore from "../../store/authStore";
 import useCartStore from "../../store/cartStore";
 
 import {
     useEffect,
+    useRef,
     useState
 } from "react";
+
 
 function Navbar() {
 
     const navigate = useNavigate();
     const location = useLocation();
+
+    const searchContainerRef = useRef(null);
+    const requestIdRef = useRef(0);
 
     const user = useAuthStore(
         state => state.user
@@ -54,6 +62,11 @@ function Navbar() {
         state => state.fetchCart
     );
 
+
+    /* =========================================
+       SEARCH STATE
+    ========================================= */
+
     const [search, setSearch] = useState(() => {
 
         const params =
@@ -64,6 +77,23 @@ function Navbar() {
         return params.get("search") || "";
 
     });
+
+    const [suggestions, setSuggestions] = useState({
+        products: [],
+        brands: [],
+        categories: []
+    });
+
+    const [showSuggestions, setShowSuggestions] =
+        useState(false);
+
+    const [suggestionsLoading, setSuggestionsLoading] =
+        useState(false);
+
+
+    /* =========================================
+       SYNC SEARCH WITH URL
+    ========================================= */
 
     useEffect(() => {
 
@@ -76,15 +106,262 @@ function Navbar() {
             params.get("search") || ""
         );
 
+        setShowSuggestions(false);
+
     }, [location.search]);
+
+
+    /* =========================================
+       SEARCH SUGGESTIONS
+    ========================================= */
+
+    useEffect(() => {
+
+        const keyword = search.trim();
+
+        /*
+         * Don't search for empty strings
+         * or a single character.
+         */
+
+        if (keyword.length < 2) {
+
+            requestIdRef.current += 1;
+
+            setSuggestions({
+                products: [],
+                brands: [],
+                categories: []
+            });
+
+            setSuggestionsLoading(false);
+            setShowSuggestions(false);
+
+            return;
+
+        }
+
+
+        /*
+         * Create request ID.
+         *
+         * This prevents an old API response
+         * from replacing a newer search result.
+         */
+
+        const requestId =
+            ++requestIdRef.current;
+
+
+        /*
+         * Debounce API call.
+         */
+
+        const timer = setTimeout(
+            async () => {
+
+                try {
+
+                    setSuggestionsLoading(true);
+                    setShowSuggestions(true);
+
+
+                    const response =
+                        await productService.getSearchSuggestions(
+                            keyword
+                        );
+
+
+                    /*
+                     * Ignore stale response.
+                     */
+
+                    if (
+                        requestId !==
+                        requestIdRef.current
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const data =
+                        response?.data || {};
+
+
+                    setSuggestions({
+
+                        products:
+                            Array.isArray(
+                                data.products
+                            )
+                                ? data.products
+                                : [],
+
+                        brands:
+                            Array.isArray(
+                                data.brands
+                            )
+                                ? data.brands
+                                : [],
+
+                        categories:
+                            Array.isArray(
+                                data.categories
+                            )
+                                ? data.categories
+                                : []
+
+                    });
+
+                } catch (error) {
+
+                    if (
+                        requestId !==
+                        requestIdRef.current
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    console.error(
+                        "Search suggestions error:",
+                        error
+                    );
+
+
+                    setSuggestions({
+                        products: [],
+                        brands: [],
+                        categories: []
+                    });
+
+                } finally {
+
+                    if (
+                        requestId ===
+                        requestIdRef.current
+                    ) {
+
+                        setSuggestionsLoading(false);
+
+                    }
+
+                }
+
+            },
+            250
+        );
+
+
+        return () => {
+
+            clearTimeout(timer);
+
+        };
+
+    }, [search]);
+
+
+    /* =========================================
+       CLOSE SUGGESTIONS ON OUTSIDE CLICK
+    ========================================= */
+
+    useEffect(() => {
+
+        const handleOutsideClick = event => {
+
+            if (
+                searchContainerRef.current &&
+                !searchContainerRef.current.contains(
+                    event.target
+                )
+            ) {
+
+                setShowSuggestions(false);
+
+            }
+
+        };
+
+
+        document.addEventListener(
+            "mousedown",
+            handleOutsideClick
+        );
+
+
+        return () => {
+
+            document.removeEventListener(
+                "mousedown",
+                handleOutsideClick
+            );
+
+        };
+
+    }, []);
+
+
+    /* =========================================
+       ESCAPE KEY
+    ========================================= */
+
+    useEffect(() => {
+
+        const handleEscape = event => {
+
+            if (event.key === "Escape") {
+
+                setShowSuggestions(false);
+
+            }
+
+        };
+
+
+        document.addEventListener(
+            "keydown",
+            handleEscape
+        );
+
+
+        return () => {
+
+            document.removeEventListener(
+                "keydown",
+                handleEscape
+            );
+
+        };
+
+    }, []);
+
+
+    /* =========================================
+       CART
+    ========================================= */
 
     useEffect(() => {
 
         if (isAuthenticated) {
+
             fetchCart();
+
         }
 
-    }, [isAuthenticated, fetchCart]);
+    }, [
+        isAuthenticated,
+        fetchCart
+    ]);
+
+
+    /* =========================================
+       LOGOUT
+    ========================================= */
 
     const handleLogout = async () => {
 
@@ -111,15 +388,25 @@ function Navbar() {
 
     };
 
-    const handleSearch = e => {
 
-        e.preventDefault();
+    /* =========================================
+       SEARCH
+    ========================================= */
+
+    const handleSearch = event => {
+
+        event.preventDefault();
 
         const keyword =
             search.trim();
 
+
+        setShowSuggestions(false);
+
+
         const params =
             new URLSearchParams();
+
 
         if (keyword) {
 
@@ -130,23 +417,140 @@ function Navbar() {
 
         }
 
+
         navigate(
             `/products?${params.toString()}`
         );
 
     };
 
+
+    /* =========================================
+       CLEAR SEARCH
+    ========================================= */
+
     const clearSearch = () => {
 
+        requestIdRef.current += 1;
+
         setSearch("");
+
+        setSuggestions({
+            products: [],
+            brands: [],
+            categories: []
+        });
+
+        setSuggestionsLoading(false);
+
+        setShowSuggestions(false);
 
         navigate("/products");
 
     };
 
+
+    /* =========================================
+       SELECT PRODUCT
+    ========================================= */
+
+    const handleProductSelect = product => {
+
+        if (!product?.slug) {
+
+            return;
+
+        }
+
+
+        setSearch("");
+
+        setShowSuggestions(false);
+
+
+        navigate(
+            `/products/${product.slug}`
+        );
+
+    };
+
+
+    /* =========================================
+       SELECT BRAND
+    ========================================= */
+
+    const handleBrandSelect = brand => {
+
+        if (!brand?.slug) {
+
+            return;
+
+        }
+
+
+        setSearch("");
+
+        setShowSuggestions(false);
+
+
+        navigate(
+            `/products?brand=${encodeURIComponent(
+                brand.slug
+            )}`
+        );
+
+    };
+
+
+    /* =========================================
+       SELECT CATEGORY
+    ========================================= */
+
+    const handleCategorySelect = category => {
+
+        if (!category?.slug) {
+
+            return;
+
+        }
+
+
+        setSearch("");
+
+        setShowSuggestions(false);
+
+
+        navigate(
+            `/products?category=${encodeURIComponent(
+                category.slug
+            )}`
+        );
+
+    };
+
+
+    /* =========================================
+       SUGGESTION STATE
+    ========================================= */
+
+    const hasSuggestions =
+        suggestions.products.length > 0 ||
+        suggestions.brands.length > 0 ||
+        suggestions.categories.length > 0;
+
+
+    /* =========================================
+       CAPITALIZE
+    ========================================= */
+
     const capitalizeFirstLetter = str => {
 
-        if (!str) return "";
+        if (!str) {
+
+            return "";
+
+        }
+
 
         return (
             str.charAt(0).toUpperCase() +
@@ -155,15 +559,21 @@ function Navbar() {
 
     };
 
+
+    /* =========================================
+       RENDER
+    ========================================= */
+
     return (
 
         <header className="navbar">
 
             <div className="container navbar-container">
 
-                {/* =========================
+
+                {/* =====================================
                     LOGO
-                ========================== */}
+                ====================================== */}
 
                 <Link
                     to="/"
@@ -171,19 +581,24 @@ function Navbar() {
                 >
 
                     <span className="logo-icon">
+
                         <FaPaw />
+
                     </span>
 
+
                     <span className="logo-text">
+
                         PawPoint
+
                     </span>
 
                 </Link>
 
 
-                {/* =========================
+                {/* =====================================
                     NAVIGATION
-                ========================== */}
+                ====================================== */}
 
                 <nav className="navbar-nav">
 
@@ -191,17 +606,21 @@ function Navbar() {
                         Home
                     </Link>
 
+
                     <Link to="/products?pet=Dog">
                         Dogs
                     </Link>
+
 
                     <Link to="/products?pet=Cat">
                         Cats
                     </Link>
 
+
                     <Link to="/products">
                         Products
                     </Link>
+
 
                     <Link to="/wishlist">
                         Wishlist
@@ -210,64 +629,432 @@ function Navbar() {
                 </nav>
 
 
-                {/* =========================
+                {/* =====================================
                     SEARCH
-                ========================== */}
+                ====================================== */}
 
-                <form
-                    className="navbar-search"
-                    onSubmit={handleSearch}
+                <div
+                    className="navbar-search-wrapper"
+                    ref={searchContainerRef}
                 >
 
-                    <FiSearch
-                        className="search-icon"
-                    />
+                    <form
+                        className="navbar-search"
+                        onSubmit={handleSearch}
+                    >
 
-                    <input
-                        type="text"
-                        placeholder="Search products..."
-                        value={search}
-                        onChange={e =>
-                            setSearch(
-                                e.target.value
-                            )
-                        }
-                    />
+                        <FiSearch
+                            className="search-icon"
+                        />
 
-                    {search && (
+
+                        <input
+                            type="text"
+                            placeholder="Search products..."
+                            value={search}
+                            onChange={event => {
+
+                                const value =
+                                    event.target.value;
+
+                                setSearch(value);
+
+
+                                if (
+                                    value.trim().length >= 2
+                                ) {
+
+                                    setShowSuggestions(
+                                        true
+                                    );
+
+                                } else {
+
+                                    setShowSuggestions(
+                                        false
+                                    );
+
+                                }
+
+                            }}
+                            onFocus={() => {
+
+                                if (
+                                    search.trim().length >= 2
+                                ) {
+
+                                    setShowSuggestions(
+                                        true
+                                    );
+
+                                }
+
+                            }}
+                            autoComplete="off"
+                        />
+
+
+                        {suggestionsLoading && (
+
+                            <FiLoader
+                                className="search-loading-icon"
+                            />
+
+                        )}
+
+
+                        {search &&
+                            !suggestionsLoading && (
+
+                            <button
+                                type="button"
+                                className="search-clear"
+                                onClick={clearSearch}
+                                aria-label="Clear search"
+                            >
+
+                                <FiX />
+
+                            </button>
+
+                        )}
+
 
                         <button
-                            type="button"
-                            className="search-clear"
-                            onClick={
-                                clearSearch
-                            }
-                            aria-label="Clear search"
+                            type="submit"
+                            className="search-submit"
                         >
 
-                            <FiX />
+                            Search
 
                         </button>
 
+                    </form>
+
+
+                    {/* =================================
+                        SUGGESTIONS DROPDOWN
+                    ================================== */}
+
+                    {showSuggestions &&
+                        search.trim().length >= 2 && (
+
+                        <div className="search-suggestions">
+
+
+                            {/* =================================
+                                LOADING
+                            ================================== */}
+
+                            {suggestionsLoading && (
+
+                                <div className="suggestions-loading">
+
+                                    <FiLoader
+                                        className="suggestions-spinner"
+                                    />
+
+                                    <span>
+                                        Searching...
+                                    </span>
+
+                                </div>
+
+                            )}
+
+
+                            {/* =================================
+                                RESULTS
+                            ================================== */}
+
+                            {!suggestionsLoading &&
+                                hasSuggestions && (
+
+                                <>
+
+
+                                    {/* =================================
+                                        PRODUCTS
+                                    ================================== */}
+
+                                    {suggestions.products.length > 0 && (
+
+                                        <div className="suggestion-section">
+
+                                            <div className="suggestion-section-title">
+                                                Products
+                                            </div>
+
+
+                                            {suggestions.products.map(
+                                                product => {
+
+                                                    return (
+
+                                                        <button
+                                                            key={
+                                                                product._id ||
+                                                                product.slug
+                                                            }
+                                                            type="button"
+                                                            className="suggestion-product"
+                                                            onClick={() =>
+                                                                handleProductSelect(
+                                                                    product
+                                                                )
+                                                            }
+                                                        >
+
+                                                            <div className="suggestion-product-image">
+
+                                                                <img
+                                                                    src={
+                                                                        product.thumbnail
+                                                                    }
+                                                                    alt={
+                                                                        product.name
+                                                                    }
+                                                                />
+
+                                                            </div>
+
+
+                                                            <div className="suggestion-product-info">
+
+                                                                <div className="suggestion-product-name">
+
+                                                                    {
+                                                                        product.name
+                                                                    }
+
+                                                                </div>
+
+
+                                                                {product.discountPrice !==
+                                                                    undefined && (
+
+                                                                    <div className="suggestion-product-price">
+
+                                                                        ₹
+                                                                        {Number(
+                                                                            product.discountPrice
+                                                                        ).toLocaleString(
+                                                                            "en-IN"
+                                                                        )}
+
+                                                                    </div>
+
+                                                                )}
+
+                                                            </div>
+
+                                                        </button>
+
+                                                    );
+
+                                                }
+                                            )}
+
+                                        </div>
+
+                                    )}
+
+
+                                    {/* =================================
+                                        BRANDS
+                                    ================================== */}
+
+                                    {suggestions.brands.length > 0 && (
+
+                                        <div className="suggestion-section">
+
+                                            <div className="suggestion-section-title">
+                                                Brands
+                                            </div>
+
+
+                                            {suggestions.brands.map(
+                                                brand => {
+
+                                                    return (
+
+                                                        <button
+                                                            key={
+                                                                brand._id ||
+                                                                brand.slug
+                                                            }
+                                                            type="button"
+                                                            className="suggestion-simple-item"
+                                                            onClick={() =>
+                                                                handleBrandSelect(
+                                                                    brand
+                                                                )
+                                                            }
+                                                        >
+
+                                                            {brand.logo && (
+
+                                                                <img
+                                                                    src={
+                                                                        brand.logo
+                                                                    }
+                                                                    alt=""
+                                                                    className="suggestion-brand-logo"
+                                                                />
+
+                                                            )}
+
+
+                                                            <span>
+
+                                                                {
+                                                                    brand.name
+                                                                }
+
+                                                            </span>
+
+                                                        </button>
+
+                                                    );
+
+                                                }
+                                            )}
+
+                                        </div>
+
+                                    )}
+
+
+                                    {/* =================================
+                                        CATEGORIES
+                                    ================================== */}
+
+                                    {suggestions.categories.length > 0 && (
+
+                                        <div className="suggestion-section">
+
+                                            <div className="suggestion-section-title">
+                                                Categories
+                                            </div>
+
+
+                                            {suggestions.categories.map(
+                                                category => {
+
+                                                    return (
+
+                                                        <button
+                                                            key={
+                                                                category._id ||
+                                                                category.slug
+                                                            }
+                                                            type="button"
+                                                            className="suggestion-simple-item"
+                                                            onClick={() =>
+                                                                handleCategorySelect(
+                                                                    category
+                                                                )
+                                                            }
+                                                        >
+
+                                                            <span>
+
+                                                                {
+                                                                    category.name
+                                                                }
+
+                                                            </span>
+
+
+                                                            {category.pet && (
+
+                                                                <span className="suggestion-category-pet">
+
+                                                                    {
+                                                                        category.pet
+                                                                    }
+
+                                                                </span>
+
+                                                            )}
+
+                                                        </button>
+
+                                                    );
+
+                                                }
+                                            )}
+
+                                        </div>
+
+                                    )}
+
+                                </>
+
+                            )}
+
+
+                            {/* =================================
+                                NO RESULTS
+                            ================================== */}
+
+                            {!suggestionsLoading &&
+                                !hasSuggestions && (
+
+                                <div className="suggestions-empty">
+
+                                    <FiSearch />
+
+                                    <span>
+                                        No products found
+                                    </span>
+
+                                </div>
+
+                            )}
+
+
+                            {/* =================================
+                                SEARCH ALL
+                            ================================== */}
+
+                            {!suggestionsLoading && (
+
+                                <button
+                                    type="button"
+                                    className="suggestions-search-all"
+                                    onClick={handleSearch}
+                                >
+
+                                    <FiSearch />
+
+                                    <span>
+
+                                        Search for "{search.trim()}"
+
+                                    </span>
+
+                                </button>
+
+                            )}
+
+                        </div>
+
                     )}
 
-                    <button
-                        type="submit"
-                        className="search-submit"
-                    >
-                        Search
-                    </button>
-
-                </form>
+                </div>
 
 
-                {/* =========================
+                {/* =====================================
                     ACTIONS
-                ========================== */}
+                ====================================== */}
 
                 <div className="navbar-actions">
 
-                    {/* Cart */}
+
+                    {/* =================================
+                        CART
+                    ================================== */}
 
                     <button
                         type="button"
@@ -280,10 +1067,13 @@ function Navbar() {
 
                         <BsCart3 />
 
+
                         {count > 0 && (
 
                             <span className="cart-count">
+
                                 {count}
+
                             </span>
 
                         )}
@@ -291,7 +1081,9 @@ function Navbar() {
                     </button>
 
 
-                    {/* User */}
+                    {/* =================================
+                        USER
+                    ================================== */}
 
                     {isAuthenticated ? (
 
@@ -312,7 +1104,9 @@ function Navbar() {
                                     {user?.avatar ? (
 
                                         <img
-                                            src={user.avatar}
+                                            src={
+                                                user.avatar
+                                            }
                                             alt={
                                                 user.firstName
                                             }
@@ -326,6 +1120,7 @@ function Navbar() {
 
                                 </span>
 
+
                                 <span className="user-name">
 
                                     {capitalizeFirstLetter(
@@ -336,6 +1131,7 @@ function Navbar() {
 
                             </button>
 
+
                             <button
                                 type="button"
                                 className="nav-logout-btn"
@@ -343,7 +1139,9 @@ function Navbar() {
                                     handleLogout
                                 }
                             >
+
                                 Logout
+
                             </button>
 
                         </div>
@@ -361,8 +1159,11 @@ function Navbar() {
                                     )
                                 }
                             >
+
                                 Login
+
                             </button>
+
 
                             <button
                                 type="button"
@@ -373,7 +1174,9 @@ function Navbar() {
                                     )
                                 }
                             >
+
                                 Register
+
                             </button>
 
                         </div>
@@ -389,5 +1192,6 @@ function Navbar() {
     );
 
 }
+
 
 export default Navbar;

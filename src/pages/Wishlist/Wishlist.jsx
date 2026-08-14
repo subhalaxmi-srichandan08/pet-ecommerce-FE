@@ -58,7 +58,7 @@ function Wishlist() {
         }
 
     };
-
+console.log(wishlist);
     if (!wishlist.length) {
 
         return (
@@ -87,7 +87,7 @@ function Wishlist() {
 
                 {
 
-                    wishlist.map(item => {
+                    wishlist.filter((i)=>i?.product).map(item => {
 
                         const product =
                             item.product;

@@ -300,20 +300,16 @@
         ERRORS
 =========================== */
 
-.login-card span{
+.field-error {
+    display: block;
+    min-height: 22px;
 
-    display:block;
+    color: #e53935;
 
-    min-height:22px;
+    font-size: 13px;
 
-    color:#e53935;
-
-    font-size:13px;
-
-    margin-top:6px;
-
-    margin-bottom:12px;
-
+    margin-top: 6px;
+    margin-bottom: 12px;
 }
 
 /* ===========================
@@ -449,6 +445,41 @@
 
     text-decoration:underline;
 
+}
+
+.google-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 24px 0;
+    color: #9ca3af;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.google-divider::before,
+.google-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.google-divider span {
+    color: #9ca3af;
+    min-height: auto;
+    margin: 0;
+    font-size: 12px;
+}
+
+.google-login {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.google-login > div {
+    width: 100% !important;
 }
 
 /* ===========================
