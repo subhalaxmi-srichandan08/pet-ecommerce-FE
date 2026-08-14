@@ -589,6 +589,358 @@
     background: #1d4ed8;
 }
 
+/* =========================================
+   SEARCH SUGGESTIONS
+========================================= */
+
+.navbar-search-wrapper {
+    position: relative;
+    min-width: 0;
+    width: 100%;
+}
+
+.search-loading-icon {
+    flex-shrink: 0;
+    color: #9ca3af;
+    font-size: 16px;
+    animation: search-spin 0.8s linear infinite;
+}
+
+@keyframes search-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.search-suggestions {
+    position: absolute;
+
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+
+    z-index: 2000;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.12);
+
+    overflow: hidden;
+
+    max-height: 480px;
+
+    overflow-y: auto;
+}
+
+.suggestion-section {
+    padding: 8px 0;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.suggestion-section:last-of-type {
+    border-bottom: none;
+}
+
+.suggestion-section-title {
+    padding: 7px 14px;
+
+    color: #9ca3af;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.7px;
+}
+
+
+/* =========================================
+   PRODUCT SUGGESTION
+========================================= */
+
+.suggestion-product {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 9px 14px;
+
+    border: none;
+
+    background: transparent;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease;
+}
+
+.suggestion-product:hover {
+    background: #f8fafc;
+}
+
+.suggestion-product-image {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 8px;
+
+    background: #f8fafc;
+
+    border: 1px solid #f1f5f9;
+}
+
+.suggestion-product-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+.suggestion-product-info {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.suggestion-product-name {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    color: #1f2937;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+.suggestion-product-price {
+    margin-top: 3px;
+
+    color: #2563eb;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================
+   BRAND / CATEGORY
+========================================= */
+
+.suggestion-simple-item {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 9px 14px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #374151;
+
+    text-align: left;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+.suggestion-simple-item:hover {
+    background: #f8fafc;
+
+    color: #2563eb;
+}
+
+.suggestion-brand-logo {
+    width: 28px;
+    height: 28px;
+
+    object-fit: contain;
+
+    border-radius: 5px;
+}
+
+.suggestion-category-pet {
+    margin-left: auto;
+
+    padding: 3px 7px;
+
+    border-radius: 5px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 10px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
+
+.suggestions-loading {
+    min-height: 90px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+.suggestions-spinner {
+    font-size: 17px;
+
+    animation:
+        search-spin 0.8s linear infinite;
+}
+
+
+/* =========================================
+   EMPTY
+========================================= */
+
+.suggestions-empty {
+    min-height: 90px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    color: #9ca3af;
+
+    font-size: 13px;
+}
+
+.suggestions-empty svg {
+    font-size: 20px;
+}
+
+
+/* =========================================
+   SEARCH ALL
+========================================= */
+
+.suggestions-search-all {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 11px 14px;
+
+    border: none;
+
+    border-top: 1px solid #f1f5f9;
+
+    background: #fafafa;
+
+    color: #2563eb;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease;
+}
+
+.suggestions-search-all:hover {
+    background: #eff6ff;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 650px) {
+
+    .navbar-search-wrapper {
+        min-width: 0;
+    }
+
+    .search-suggestions {
+        position: fixed;
+
+        top: 68px;
+
+        left: 10px;
+        right: 10px;
+
+        width: auto;
+
+        max-height: calc(
+            100vh - 80px
+        );
+    }
+
+}
+
 
 /* =========================================
    TABLET

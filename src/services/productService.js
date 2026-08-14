@@ -11,9 +11,23 @@ const getSuggestions = q =>
         params: { q }
     });
 
+const getSearchSuggestions = async (query) => {
+
+    const response = await api.get(
+        "/products/suggestions",
+        {
+            params: {
+                q: query
+            }
+        }
+    );
+
+    return response.data;
+};
 
 export default {
     getProducts,
     getProduct,
-    getSuggestions
+    getSuggestions,
+    getSearchSuggestions
 };

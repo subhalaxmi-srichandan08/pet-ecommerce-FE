@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
 import { FaEye, FaEyeSlash, FaPaw } from "react-icons/fa";
 import { Link, replace } from "react-router-dom";
 import "./Register.css";
@@ -9,7 +10,7 @@ import { ClipLoader } from "react-spinners";
 import authService from "../../../services/authService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import useAuthStore from "../../../store/authStore";
 const initialState = {
     firstName: "",
     lastName: "",
@@ -33,7 +34,9 @@ function Register() {
     const [acceptedTerms, setAcceptedTerms] = useState(false);
 
     const navigate = useNavigate();
-
+    const setAuth = useAuthStore(
+        state => state.setAuth
+    );
     const handleChange = (e) => {
         const { name, value } = e.target;
         const updatedForm = {
@@ -68,7 +71,7 @@ function Register() {
                     password: form.password
                 });
             toast.success(response.message);
-            navigate("/login", {replace:true});
+            navigate("/login", { replace: true });
         }
 
         catch (error) {
@@ -84,6 +87,110 @@ function Register() {
         }
 
         finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
+    const handleGoogleRegister = async (credentialResponse) => {
+
+        if (!acceptedTerms) {
+
+            toast.info(
+                "Please accept the Terms & Conditions."
+            );
+
+            return;
+        }
+
+        try {
+
+            setLoading(true);
+
+            const response =
+                await authService.googleLogin(
+                    credentialResponse.credential
+                );
+
+            const data = response.data.data;
+
+            setAuth(
+                data.user,
+                data.accessToken
+            );
+
+            toast.success(
+                "Google sign up successful."
+            );
+
+            navigate("/", {
+                replace: true
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Google registration error:",
+                error
+            );
+
+            toast.error(
+                error.response?.data?.message ||
+                "Google sign up failed."
+            );
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
+    const handleGoogleSuccess = async (
+        credentialResponse
+    ) => {
+
+        try {
+
+            setLoading(true);
+
+            const response =
+                await authService.googleLogin(
+                    credentialResponse.credential
+                );
+
+            const data =
+                response.data.data;
+
+            setAuth(
+                data.user,
+                data.accessToken
+            );
+
+            toast.success(
+                "Google account created successfully."
+            );
+
+            navigate("/", {
+                replace: true
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Google registration error:",
+                error
+            );
+
+            toast.error(
+                error.response?.data?.message ||
+                "Google registration failed."
+            );
+
+        } finally {
 
             setLoading(false);
 
@@ -169,7 +276,9 @@ function Register() {
 
                     </div>
 
-                    <span>{errors.email}</span>
+                    <span className="field-error">
+                        {errors.email}
+                    </span>
 
                     <div className="password-box">
 
@@ -202,7 +311,9 @@ function Register() {
 
                     </div>
 
-                    <span>{errors.password}</span>
+                    <span className="field-error">
+                        {errors.password}
+                    </span>
 
                     <PasswordChecklist
                         password={form.password}
@@ -283,6 +394,22 @@ function Register() {
                         }
 
                     </button>
+                    <div className="google-divider">
+                        <span>OR</span>
+                    </div>
+
+                    <div className="google-register">
+                        <GoogleLogin
+                            onSuccess={handleGoogleSuccess}
+                            onError={() => {
+                                toast.error(
+                                    "Google sign up failed."
+                                );
+                            }}
+                            useOneTap={false}
+                            width="100%"
+                        />
+                    </div>
 
                     <p>
 
